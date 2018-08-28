@@ -5,9 +5,8 @@ class Person {
     this.details                = {};
     this.intermidiateState      = {};
     this.adapter                = adapterObj;
-    typeof data === "object"
-      ? (this.intermidiateState = data)
-      : (this.id                = parseInt(data));
+
+    typeof data === "object"  ? (this.intermidiateState = data) : (this.id = parseInt(data));
   }
 
   assign(key,obj) {
@@ -21,7 +20,8 @@ class Person {
   }
 
   save() {
-    this.adapter.add(this.intermidiateState).then(savedPerson => {
+    return this.adapter.add(this.intermidiateState)
+    .then(savedPerson => {
       this.details              = savedPerson;
       this.id                   = savedPerson["id"];
       this.intermidiateState    = {};
@@ -31,7 +31,7 @@ class Person {
   }
 
   update() {
-    this.adapter
+    return this.adapter
     .update(this.id, this.intermidiateState)
     .then(detail => {
       this.details            = detail;
@@ -42,34 +42,24 @@ class Person {
   }
 
   remove() {
-    this.adapter
-      .delete(this.id)
-      .then(msg => console.log(msg)
-      )
-      .catch(err=> console.log(err)
-      );
-    return this;
+    return this.adapter.delete(this.id);
   }
 
   findAll() {
     return this.adapter.findAll();
   }
 
-  find() {
-    return this.adapter.findOne(this.id);
+  findOne(id = null) {
+    let searchId = id ? parseInt(id) : this.id;
+    return this.adapter.findOne(searchId);
+  }
+
+  find(obj){
+    return this.adapter.find(obj);
   }
 
   getOriginal(key) {
-    return new Promise((resolve, reject) => {
-      this.adapter
-        .get(this.id)
-        .then(d => {
-          resolve(d[key]);
-        })
-        .catch(err => {
-          reject(err);
-        });
-    });
+    return this.adapter.get(this.id,key)
   }
 
   get(key) {
@@ -84,4 +74,4 @@ class Person {
   }
 }
 
-export default Person;
+module.exports = Person;
