@@ -1,37 +1,58 @@
-const utilitiFunctions = {
-  indexIsMinusOne : (index) => {
-    return index === -1 ? true : false;
-  },
+  class UtilityFunctions {
 
-  personIsFound : (person) => {
-    return person[0] ? true : false;
-  },
+    constructor(){}
 
-  isEmpty : (arrayList) => {
-    return arrayList.length > 0 ? false : true;
-  },
+    indexIsMinusOne (index)  {
+      return index === -1 ? true : false;
+    }
 
-  extractPersonDetailsFromArray : (key,val,people) => {
-    return people.filter(p =>  p[key] === parseInt(val))
-  },
+    personIsFound  (person)  {
+      return person[0] ? true : false;
+    }
 
-  extractFilteredPeople : (searchParameters,people) => {
-    return people.filter(person => {
+    isEmpty  (arrayList)  {
+      return arrayList.length > 0 ? false : true;
+    }
+
+    extractPersonDetailsFromArray  (key,val,people)  {
+      return people.filter(p =>  p[key] === parseInt(val))
+    }
+
+    extractFilteredPeople  (searchObject,people)  {
+      return people.filter(person => {
+        if(this.checkIfAllParametersMatches(person,searchObject)) return person;
+      })
+    }
+
+    extractPersonSavedIndexInArray  (id,people) {
+      return people.findIndex(p => p.id === parseInt(id));
+    }
+
+    compareObjectValues  (value1,value2)  {
+      return value1 === value2 ? true : false;
+    }
+
+    checkIfAllParametersMatches  (person,searchObject) {
       let isSearchParameterMatching = false;
-      for(let key in searchParameters){
-        isSearchParameterMatching = utilitiFunctions.compareObjectValues( person[key] , searchParameters[key] );
+      for(let key in searchObject){
+        isSearchParameterMatching = this.compareObjectValues( person[key] , searchObject[key] );
       }
-      if(isSearchParameterMatching) return person;
-    })
-  },
+      return isSearchParameterMatching;
+    }
 
-  extractPersonSavedIndexInArray : (id,people) =>{
-    return people.findIndex(p => p.id === parseInt(id));
-  },
+    returnInsertedPerson  (returnedMongoObject) {
+      return returnedMongoObject.ops[0];
+    }
 
-  compareObjectValues : (value1,value2) => {
-    return value1 === value2 ? true : false;
+    addIdToDetailsAndReturn  (details,peopleList)  {
+      details['id'] = this.getNewId(peopleList);
+      return details;
+    }
+
+    getNewId(peopleList) {    
+      return  this.isEmpty(peopleList) ?  1 : parseInt(peopleList[peopleList.length - 1]["id"])+1;
+    }
+
   }
-}
 
-module.exports = utilitiFunctions
+  module.exports = UtilityFunctions;

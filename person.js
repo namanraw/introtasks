@@ -28,6 +28,7 @@ class Person {
       console.log("Person Added");
       return this;
     })
+    .catch(err => { throw err })
   }
 
   update() {
@@ -38,7 +39,8 @@ class Person {
       this.id                 = this.details.id;
       this.intermidiateState  = {};
       return this;
-    });    
+    })
+    .catch(err => { throw err })
   }
 
   remove() {

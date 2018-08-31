@@ -1,5 +1,6 @@
 let Person = require('./person');
 let ArrayAdapter = require('./adapters/array_adapter');
+let MongoAdapter = require('./adapters/mongo_adapter');
 
 const peopleData = [
   {
@@ -24,39 +25,59 @@ const peopleData = [
   }
 ];
 
-let adapter = new ArrayAdapter();
-function sequence(personsArray){
-  return new Promise((resolve,reject)=>{
-    let persons = wrapInPerson(personsArray)
+let adapter = new MongoAdapter();
 
-    let holdPromise = Promise.resolve()
+
+// function sequence(personsArray){
   
-    persons.forEach((person,i) => {
-       holdPromise
-      .then(function(){
-        holdPromise = person.save()
-        if(i === persons.length-1)
-          resolve(holdPromise)
-      })
-    })
+//     let persons = wrapInPerson(personsArray)
+
+//     let holdPromise = Promise.resolve();
+  
+//     persons.forEach((person,i) => {
+//       holdPromise
+//       .then(()=>{
+//         return person.save()
+//       })
+//       .then((p) => {
+//         holdPromise = p
+//       })
+//     })
+    
+//     console.log(holdPromise);
+//   }    
+
+// function wrapInPerson(personsArray){
+//   return personsArray.map(personJSON => {
+//     return new Person(adapter, personJSON)
+//   })
+// }
+
+function sequence( personsArray ){
+  let persons = wrapInPerson(personsArray)
+  let seqPromise = Promise.resolve()
+
+  // var result = Promise.resolve();
+  // tasks.forEach(task => {
+  //   result = result.then(() => task());
+  // });
+  // return result;
+
+  persons.forEach(person => {
+    seqPromise = seqPromise.then(() => person.save()) 
   })
+  return seqPromise
 }
 
 function wrapInPerson(personsArray){
-  return personsArray.map(personJSON => {
-    return new Person(adapter, personJSON)
-  })
+return personsArray.map(person => {
+  return new Person(adapter, person)
+})
 }
 
-sequence(peopleData)
-.then(a => {return(a)})
-.then(lastInstance => {
-  let searchObject = {
-    age   : 23,
-    name  : "Naman Bhardwaj"
-  }
-  return lastInstance.find(searchObject)
-})
+
+ sequence(peopleData)
+.then(lastInstance =>  lastInstance.findOne())
 .then(people => {
   console.log(people)
 })

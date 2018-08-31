@@ -1,5 +1,7 @@
 let constant    = require('../constant');
-let functions   = require('../utils');
+const UtilityFunctions      = require('../utils');
+const functions             = new UtilityFunctions();
+
 
 let people = [];
 
@@ -18,34 +20,33 @@ class ArrayAdapter {
     return new Promise((resolve, reject) => {
       if (functions.isEmpty(people)) 
         reject(constant.PEOPLE_LIST_EMPTY_MESSAGE);
+
       let person = functions.extractPersonDetailsFromArray('id',id,people);
+      
       if (!functions.personIsFound(person)) 
         reject(constant.PERSON_NOT_FOUND_MESSAGE);
+
       let foundPerson = person[0];
       resolve(foundPerson);
     });
   }
 
-  find(object){
+  find(findObject){
     return new Promise((resolve,reject)=>{
       if (functions.isEmpty(people)) 
         reject(constant.PEOPLE_LIST_EMPTY_MESSAGE);
-      let person = functions.extractFilteredPeople(object,people);
+      let person = functions.extractFilteredPeople(findObject,people);
       if (!functions.personIsFound(person)) 
         reject(constant.PERSON_NOT_FOUND_MESSAGE);
       resolve(person);
     })
   }
 
-  // GET THE LAST PERSON's ID
-  getNewId() {    
-    return  functions.isEmpty(people) ?  1 : parseInt(people[people.length - 1]["id"])+1;
-  }
-
   // ADD THE PERSON DETAILS TO THE PEOPLE ARRAY
   add(details) {
     return new Promise((resolve, reject) => {
-      details["id"] = this.getNewId();
+      console.log(people)
+      details["id"] = functions.getNewId(people);
       people.push(details);
       resolve(details);
     })
