@@ -27,41 +27,9 @@ const peopleData = [
 
 let adapter = new MongoAdapter();
 
-
-// function sequence(personsArray){
-  
-//     let persons = wrapInPerson(personsArray)
-
-//     let holdPromise = Promise.resolve();
-  
-//     persons.forEach((person,i) => {
-//       holdPromise
-//       .then(()=>{
-//         return person.save()
-//       })
-//       .then((p) => {
-//         holdPromise = p
-//       })
-//     })
-    
-//     console.log(holdPromise);
-//   }    
-
-// function wrapInPerson(personsArray){
-//   return personsArray.map(personJSON => {
-//     return new Person(adapter, personJSON)
-//   })
-// }
-
 function sequence( personsArray ){
   let persons = wrapInPerson(personsArray)
   let seqPromise = Promise.resolve()
-
-  // var result = Promise.resolve();
-  // tasks.forEach(task => {
-  //   result = result.then(() => task());
-  // });
-  // return result;
 
   persons.forEach(person => {
     seqPromise = seqPromise.then(() => person.save()) 
@@ -70,9 +38,9 @@ function sequence( personsArray ){
 }
 
 function wrapInPerson(personsArray){
-return personsArray.map(person => {
-  return new Person(adapter, person)
-})
+  return personsArray.map(person => {
+    return new Person(adapter, person)
+  })
 }
 
 

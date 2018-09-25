@@ -30,8 +30,7 @@ object(OBJECT_UID).set(KEY,VALUE)
                   .catch(err=>console.log(err))
 ```
 >Object with mentioned UID is updated.
-
-## Draft An Object
+ ## Draft An Object
 ```
 object().assign(newInsertObject)
         .saveAsDraft()
